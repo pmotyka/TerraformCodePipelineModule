@@ -180,7 +180,7 @@ resource "aws_codebuild_project" "build" {
 
   source {
     type = "CODEPIPELINE"
-    buildspec = templatefile("${path.root}/../../buildspecs/buildspec-code.yml", {
+    buildspec = templatefile("${path.root}/../../buildspecs/buildspec-plan.yml", {
       tf_workspace    = terraform.workspace
       github_token    = data.aws_ssm_parameter.github_token.value
       repository_name = var.repository_name
@@ -213,10 +213,9 @@ resource "aws_codebuild_project" "deploy" {
 
   source {
     type = "CODEPIPELINE"
-    buildspec = templatefile("${path.root}/../../buildspecs/buildspec-terraform.yml", {
+    buildspec = templatefile("${path.root}/../../buildspecs/buildspec-apply.yml", {
       tf_workspace       = terraform.workspace
       tf_workspace_lower = lower(terraform.workspace)
-      node_env           = var.node_env
       repository_name    = var.repository_name
       project_name       = lower(var.tags.ProjectName)
       github_token       = data.aws_ssm_parameter.github_token.value

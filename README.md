@@ -1,10 +1,10 @@
 # TerraformCodePipelineModule
 
-An importable, Terraform defined, CodePipeline module used to deliver Terraform payloads.
+This module defines a *pipeline* which can deliver a *payload*. Specifically, an importable, Terraform defined, CodePipeline module used to deliver Terraform *payloads* to and AWS account, which are also typically considered as *workloads* (this is out of the scope of landing zone solutions).
 
-This is primarily to be executed by Pipeline Lifecycle Manager, which will stand up and tear down pipelines, for which you need to have the module imported into your repository using the best practices as seen in the Example repos.
+*Pipelines* created by this module will execute when new commits are pushed to the corresponding repo & branch it is connected to.
 
-Pipelines created by this module will execute when new commits are pushed to the branch it follows and also every night.
+An example consumer app using this pipeline module can be found @ https://code.amazon.com/packages/TerraformExamplePayload/trees/mainline.
 
 To use it, you might incorporate it as follows:
 
@@ -15,10 +15,7 @@ terraform {
 
 locals {
   tags = {
-    Order       = "70038033"
-    Owner       = "MRAD"
-    AppID       = "1795"
-    Org         = "MRAD"
+    Owner       = "chrilebl"
     ProjectName = "${var.repository_name}-Pipeline"
   }
 }
@@ -31,28 +28,23 @@ module "pipeline" {
 }
 ```
 
-The pipeline module expects that your buildspecs are two directories down from the pipeline. An example of this folder structure might involve buildspecs at `buildspecs/` relative to repo root and the pipeline at `terraform/pipeline/main.tf`.
-
-In order to execute the pipeline "locally", you need to:
-
-- be authenticated and role-assumed into the correct AWS environment,
-- create a backendConfig file as shown in the Lambdas-Terraform-Example repository,
-- pass or set the needed variables, and
-- set the workspace as the github branch
-
-For handling these with a script you can use the `deploy_pipelines.sh` script found in the Example repositories.
-
-# List of Variables
+The pipeline module expects that your *payload* contains the following directory structure and key files, for ease of automation.
 
 ```
-region
-repository_name
-tags
-node_env (default: dev)
-use_custom_image (default: true)
-aws_account
+buildspecs/
+  buildspec-plan.sh
+  buildspec-plan.yml
+  buildspec-plan.sh
+  buildspec-apply.yml
+*.tf
 ```
 
-# Custom Build image
+This repo also includes terraform to bootstrap the backend storage for a terraform envionment, and can be ran from the `bootstrap` directory by executing `terraform apply` in an authenticated shell. This will provision Terraform state storage as described @ https://www.terraform.io/docs/backends/types/s3.html.
 
-There is a [custom codebuild](https://github.com/$GITHUB_ORG/mrad-codebuild-image/tree/development) docker image that is utilized by default. To opt out, set `use_custom_image` to false.
+# List of Variables Supported by this Terraform Module
+
+```
+region (the aws region in which to deploy)
+repository_name (the name of the github repository to integrate your pipeline with)
+tags (the tags to use on your resources.)
+```

@@ -1,3 +1,7 @@
+# Describes the resources used to store the terraform state
+# read more @ https://www.terraform.io/docs/backends/types/s3.html
+
+# This table is used to lock workspace state during runs
 resource "aws_dynamodb_table" "basic-dynamodb-table" {
   name         = "terraform-state-lock"
   billing_mode = "PAY_PER_REQUEST"
@@ -10,6 +14,7 @@ resource "aws_dynamodb_table" "basic-dynamodb-table" {
 
 }
 
+# This bucket is used to store state of terraform workspaces
 resource "aws_s3_bucket" "state_bucket" {
   bucket        = "${var.namespace}-terraform-backend-${var.account_name}"
   acl           = "private"

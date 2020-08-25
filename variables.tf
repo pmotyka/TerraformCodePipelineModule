@@ -10,28 +10,11 @@ variable "repository_name" {
 
 variable "tags" {
   type        = map
-  description = "The list of PG&E tags required for AWS assets"
-}
-
-variable "node_env" {
-  type        = string
-  description = "The node_env envar passed to buildspec_terraform"
-  default     = "dev"
-}
-
-variable "use_custom_image" {
-  type        = bool
-  description = "Switch for using terrform docker image vs custom docker image"
-  default     = true
-}
-
-variable "aws_account" {
-  type        = string
-  description = "Aws account name, Dev, QA, Prod"
+  description = "The list of tags required for AWS assets"
 }
 
 variable "github_org" {
   type        = string
-  description = "Github organization or user that owns the repo"
+  description = "Github organization or user that owns the payload repo"
   default     = "chrilebl"
 }
