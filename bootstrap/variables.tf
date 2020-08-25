@@ -1,7 +1,7 @@
 variable "namespace" {
   type        = string
   description = "The global namespace for your infra"
-  default     = "chrilebl"
+  default     = "cleblanc"
 }
 
 variable "account_name" {
