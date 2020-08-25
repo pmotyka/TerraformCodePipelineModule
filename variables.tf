@@ -16,5 +16,5 @@ variable "tags" {
 variable "github_org" {
   type        = string
   description = "Github organization or user that owns the payload repo"
-  default     = "chrilebl"
+  default     = "cleblanc"
 }

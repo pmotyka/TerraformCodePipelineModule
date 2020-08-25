@@ -17,7 +17,7 @@ terraform {
 
 locals {
   tags = {
-    Owner       = "chrilebl"
+    Owner       = "cleblanc"
     ProjectName = "${var.repository_name}-Pipeline"
   }
 }
@@ -34,11 +34,13 @@ The pipeline module expects that your *payload* contains the following directory
 
 ```
 buildspecs/
-  buildspec-plan.sh
-  buildspec-plan.yml
-  buildspec-plan.sh
-  buildspec-apply.yml
-*.tf
+  buildspec-apply.sh - evaluated on pipeline run, describes the apply stage
+  buildspec-apply.yml - interpolated on pipeline deploy, describes the apply build step
+  buildspec-plan.sh - evaluated on pipeline run, describes the plan stage
+  buildspec-plan.yml - interpolated on pipeline deploy, describes the plan build step
+terraform
+  payload - holds the terraform to provision
+  pipeline - holds a pipeline definition (see above code snippets or example payload repo)
 ```
 
 This repo also includes terraform to bootstrap the backend storage for a terraform envionment, and can be ran from the `bootstrap` directory by executing `terraform apply` in an authenticated shell. This will provision Terraform state storage as described @ https://www.terraform.io/docs/backends/types/s3.html.
@@ -51,10 +53,13 @@ This repo also includes terraform to bootstrap the backend storage for a terrafo
   - (This repo)
   - https://code.amazon.com/packages/TerraformExamplePayload/trees/mainline
   - https://code.amazon.com/packages/TerraformLambdaModule/trees/mainline
+4. replace instances of 'cleblanc' with your own unique identifier
 4. Bootstrap a terraform s3 backend via `cd bootstrap && terraform apply`
 5. Create 3 SSM string parameters
   - GITHUB_TOKEN - a github token allowing repo access
   - WEBHOOK_TOKEN - an arbitrary secret used to create a github webhook
+6. Follow the readme of TerraformExamplePayload
+7. Adjust iam policies where needed to follow PoLP
 
 # List of Variables Supported by this Terraform Module
 
