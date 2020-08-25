@@ -6,6 +6,8 @@ This module defines a *pipeline* which can deliver a *payload*. Specifically, an
 
 An example consumer app using this pipeline module can be found @ https://code.amazon.com/packages/TerraformExamplePayload/trees/mainline.
 
+This project is intended to integrate with github
+
 To use it, you might incorporate it as follows:
 
 ```terraform
@@ -40,6 +42,19 @@ buildspecs/
 ```
 
 This repo also includes terraform to bootstrap the backend storage for a terraform envionment, and can be ran from the `bootstrap` directory by executing `terraform apply` in an authenticated shell. This will provision Terraform state storage as described @ https://www.terraform.io/docs/backends/types/s3.html.
+
+# How to use 
+
+1. Install Terraform
+2. Authenticate a shell against an AWS account & code.amazon
+3. Mirror these repos in your/customer's github account
+  - (This repo)
+  - https://code.amazon.com/packages/TerraformExamplePayload/trees/mainline
+  - https://code.amazon.com/packages/TerraformLambdaModule/trees/mainline
+4. Bootstrap a terraform s3 backend via `cd bootstrap && terraform apply`
+5. Create 3 SSM string parameters
+  - GITHUB_TOKEN - a github token allowing repo access
+  - WEBHOOK_TOKEN - an arbitrary secret used to create a github webhook
 
 # List of Variables Supported by this Terraform Module
 

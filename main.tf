@@ -1,10 +1,20 @@
+/*
+  --- Terraform config block ---
+*/
+
 terraform {
   backend "s3" {}
 }
 
+/*
+  --- Providers ---
+
+  AWS to provision resources
+  Github to provision the webhook trigger for the pipeline
+*/
+
 provider "aws" {
-  region  = var.region
-  version = "= 2.44.0"
+  region = var.region
 }
 
 provider "github" {
@@ -14,7 +24,7 @@ provider "github" {
 
 
 /*
-  --- Existing Resource(s) ---
+  --- Existing Resource(s) via data sources ---
 */
 
 data "aws_caller_identity" "current" {}
@@ -28,9 +38,9 @@ data "aws_ssm_parameter" "webhook_token" {
   name = "WEBHOOK_TOKEN"
 }
 
-data "aws_ssm_parameter" "terraform_required_version" {
-  name = "TERRAFORM_VERSION"
-}
+/*
+  --- Local vars ---
+*/
 
 locals {
   github_webhook_event       = "push"
@@ -40,9 +50,6 @@ locals {
 }
 
 
-/*
-  --- SSM Paramters ---
-*/
 
 /*
   --- Module(s) ---
@@ -54,23 +61,6 @@ module "iam" {
   project_name               = var.repository_name
   codebuild_build_stage_arn  = aws_codebuild_project.build.arn
   codebuild_deploy_stage_arn = aws_codebuild_project.deploy.arn
-}
-
-/*
-  --- Cloudwatch event trigger ---
-*/
-
-resource "aws_cloudwatch_event_rule" "rule" {
-  name_prefix         = "${var.tags.ProjectName}-${terraform.workspace}"
-  schedule_expression = "cron(30 09 * * ? *)"
-  description         = "Nightly pipeline kickoff rule"
-  tags                = var.tags
-}
-
-resource "aws_cloudwatch_event_target" "target" {
-  rule     = aws_cloudwatch_event_rule.rule.id
-  arn      = aws_codepipeline.pipeline.arn
-  role_arn = module.iam.pipeline_role_arn
 }
 
 /*
