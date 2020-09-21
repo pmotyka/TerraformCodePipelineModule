@@ -17,7 +17,7 @@ terraform {
 
 locals {
   tags = {
-    Owner       = "cleblanc"
+    Owner       = "pmotyka"
     ProjectName = "${var.repository_name}-Pipeline"
   }
 }
@@ -53,7 +53,7 @@ This repo also includes terraform to bootstrap the backend storage for a terrafo
   - (This repo)
   - https://code.amazon.com/packages/TerraformExamplePayload/trees/mainline
   - https://code.amazon.com/packages/TerraformLambdaModule/trees/mainline
-4. replace instances of 'cleblanc' with your own unique identifier
+4. replace instances of 'pmotyka' with your own unique identifier
 4. Bootstrap a terraform s3 backend via `cd bootstrap && terraform apply`
 5. Create 3 SSM string parameters
   - GITHUB_TOKEN - a github token allowing repo access
